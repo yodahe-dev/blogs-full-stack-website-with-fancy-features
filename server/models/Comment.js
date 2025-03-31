@@ -1,21 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db');
 const User = require('./User');
-const Category = require('./Category');
+const Post = require('./Post');
 
-const Post = sequelize.define('Post', {
-    post_id: {
+const Comment = sequelize.define('Comment', {
+    comment_id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
-    },
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    thumbnail_url: {
-        type: DataTypes.STRING,
-        allowNull: true
     },
     content: {
         type: DataTypes.TEXT,
@@ -29,12 +21,12 @@ const Post = sequelize.define('Post', {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     },
-    category_id: {
+    post_id: {
         type: DataTypes.UUID,
-        allowNull: true,
+        allowNull: false,
         references: {
-            model: 'categories',
-            key: 'category_id'
+            model: 'posts',
+            key: 'post_id'
         }
     },
     user_id: {
@@ -46,12 +38,12 @@ const Post = sequelize.define('Post', {
         }
     }
 }, {
-    tableName: 'posts',
+    tableName: 'comments',
     timestamps: false
 });
 
 // Associations
-Post.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-Post.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
+Comment.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+Comment.belongsTo(Post, { foreignKey: 'post_id', as: 'post' });
 
-module.exports = Post;
+module.exports = Comment;

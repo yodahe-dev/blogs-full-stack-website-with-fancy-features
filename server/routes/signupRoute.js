@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
             username,
             email,
             password_hash: hashedPassword,
-            role_id: 'faade30c-0ced-11f0-a3cf-40b03495ba25'
+            role_id: '9276a7a0-0e00-11f0-894f-40b03495ba25'
         });
 
         res.status(201).json({ message: 'User registered successfully', user_id: newUser.user_id });

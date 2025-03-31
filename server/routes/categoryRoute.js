@@ -1,16 +1,14 @@
-// routes/categoryRoute.js
 const express = require('express');
 const Category = require('../models/Category');
-const { isAuthenticated } = require('../middleware/authMiddleware');  // Ensure authentication middleware is available
+const { isAuthenticated, isAdminOrSubAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Create a new category
-router.post('/', isAuthenticated, async (req, res) => {
+router.post('/', isAuthenticated, isAdminOrSubAdmin, async (req, res) => {
     try {
         const { name } = req.body;
         const newCategory = await Category.create({
             name,
-            user_id: req.user.user_id // assuming the authenticated user is attached to the req object
+            user_id: req.user.user_id // Using the authenticated user's ID
         });
         res.status(201).json({ message: 'Category created successfully', category: newCategory });
     } catch (error) {
@@ -19,7 +17,6 @@ router.post('/', isAuthenticated, async (req, res) => {
     }
 });
 
-// Get all categories
 router.get('/', async (req, res) => {
     try {
         const categories = await Category.findAll();
@@ -30,7 +27,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a category by ID
 router.get('/:id', async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id);
@@ -44,8 +40,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update a category
-router.put('/:id', isAuthenticated, async (req, res) => {
+router.put('/:id', isAuthenticated, isAdminOrSubAdmin, async (req, res) => {
     try {
         const { name } = req.body;
         const category = await Category.findByPk(req.params.id);
@@ -61,8 +56,7 @@ router.put('/:id', isAuthenticated, async (req, res) => {
     }
 });
 
-// Delete a category
-router.delete('/:id', isAuthenticated, async (req, res) => {
+router.delete('/:id', isAuthenticated, isAdminOrSubAdmin, async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id);
         if (!category) {
